@@ -110,7 +110,7 @@ const [raw, setRaw] = useState<any>(null);
             </div>
           </div>
 
-          {/* Results */}
+          {/* Results and Error Display */}
           <div className="mt-6 space-y-4">
             {recommendations.map((rec, idx) => (
               <div key={idx} className="p-4 bg-[#042c54] rounded shadow">
@@ -118,6 +118,17 @@ const [raw, setRaw] = useState<any>(null);
                 <p className="text-sm text-gray-300">{rec.description}</p>
               </div>
             ))}
+
+            {error && (
+              <div className="p-4 bg-red-900 text-red-200 rounded">
+                <p className="font-bold">Error: {error}</p>
+                {raw && (
+                  <pre className="mt-2 text-xs whitespace-pre-wrap">
+                    {typeof raw === "string" ? raw : JSON.stringify(raw, null, 2)}
+                  </pre>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -132,26 +143,7 @@ const [raw, setRaw] = useState<any>(null);
           />
         </div>
       </section>
-      {/* Results */}
-<div className="mt-6 space-y-4">
-  {recommendations.map((rec, idx) => (
-    <div key={idx} className="p-4 bg-[#042c54] rounded shadow">
-      <h3 className="font-bold">{rec.title}</h3>
-      <p className="text-sm text-gray-300">{rec.description}</p>
-    </div>
-  ))}
 
-  {error && (
-    <div className="p-4 bg-red-900 text-red-200 rounded">
-      <p className="font-bold">Error: {error}</p>
-      {raw && (
-        <pre className="mt-2 text-xs whitespace-pre-wrap">
-          {JSON.stringify(raw, null, 2)}
-        </pre>
-      )}
-    </div>
-  )}
-</div>
 
     </main>
   );

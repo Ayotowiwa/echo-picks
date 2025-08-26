@@ -1,4 +1,6 @@
+
 import { NextResponse } from "next/server";
+import { GoogleGenAI } from "@google/genai";
 
 export async function POST(req: Request) {
   try {
@@ -11,54 +13,43 @@ export async function POST(req: Request) {
       );
     }
 
-    // Call OpenAI API
-    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: `You are a recommendation engine.
-            The user will give you a category and a title they like.
-            Return a list of 5 similar ${category}s, with a one-line description each.
-            Respond ONLY in valid JSON array format:
-            [{ "title": "...", "description": "..." }, ...]`,
-          },
+    // Use the official Google GenAI SDK
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+    let response;
+    try {
+      response = await ai.models.generateContent({
+        model: "gemini-1.5-pro-latest", // use the latest public Gemini model
+        contents: [
           {
             role: "user",
-            content: `Category: ${category}, Title: ${title}`,
-          },
-        ],
-        temperature: 0.7,
-      }),
-    });
-
-    const data = await openaiRes.json();
-
-    let recommendations = [];
-    try {
-      recommendations = JSON.parse(
-        data.choices[0].message.content
-      );
-    } catch (e) {
-      console.error("Failed to parse model response:", data);
-      // fallback: send raw model content back for debugging
-      return NextResponse.json(
-        {
-          error: "Failed to parse model response",
-          raw: data.choices?.[0]?.message?.content || data,
-        },
-        { status: 500 }
-      );
+            parts: [
+              {
+                text: `You are a recommendation engine. The user will give you a category and a title they like. Return a list of 5 similar ${category}s, with a one-line description each. Respond ONLY in valid JSON array format: [{ "title": "...", "description": "..." }, ...]\nCategory: ${category}, Title: ${title}`
+              }
+            ]
+          }
+        ]
+      });
+    } catch (err) {
+      console.error("Gemini SDK error:", err);
+      return NextResponse.json({ error: "Gemini SDK error", raw: err }, { status: 500 });
     }
 
-    // ✅ Return parsed recommendations
-    return NextResponse.json({ recommendations });
+    let text = response?.text || (response?.candidates?.[0]?.content?.parts?.[0]?.text ?? "");
+    let recommendations = [];
+    try {
+      recommendations = JSON.parse(text);
+    } catch (e) {
+      console.error("Failed to parse model response:", text);
+      return NextResponse.json({ error: "Failed to parse model response", raw: text, gemini: response }, { status: 500 });
+    }
+
+    if (!Array.isArray(recommendations) || recommendations.length === 0) {
+      console.error("Gemini returned empty or invalid recommendations:", text);
+      return NextResponse.json({ error: "Gemini returned empty or invalid recommendations", raw: text, gemini: response }, { status: 500 });
+    }
+
+    return NextResponse.json({ recommendations, raw: text, gemini: response });
 
   } catch (error) {
     console.error("Error in recommendations API:", error);
