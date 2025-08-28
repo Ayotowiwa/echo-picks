@@ -84,8 +84,6 @@ const [raw, setRaw] = useState<any>(null);
               <option value="anime">Anime</option>
               <option value="game">Game</option>
               <option value="tv">TV Show</option>
-              <option value="music">Music</option>
-              <option value="any">Any</option>
             </select>
 
             <div className="flex w-full">
@@ -113,9 +111,32 @@ const [raw, setRaw] = useState<any>(null);
           {/* Results and Error Display */}
           <div className="mt-6 space-y-4">
             {recommendations.map((rec, idx) => (
-              <div key={idx} className="p-4 bg-[#042c54] rounded shadow">
-                <h3 className="font-bold">{rec.title}</h3>
-                <p className="text-sm text-gray-300">{rec.description}</p>
+              <div key={idx} className="flex bg-[#042c54] rounded shadow overflow-hidden" style={{ minHeight: 120 }}>
+                <div className="flex-shrink-0 w-24 h-32 bg-gray-800 flex items-center justify-center">
+                  {rec.poster ? (
+                    <Image
+                      src={rec.poster}
+                      alt={rec.title}
+                      width={96}
+                      height={128}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <span className="text-xs text-gray-400">No Image</span>
+                  )}
+                </div>
+                <div className="flex-1 p-4 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-bold text-lg">{rec.title} {rec.year && <span className="text-gray-400 font-normal">({rec.year})</span>}</h3>
+                    {rec.rating && (
+                      <div className="text-yellow-400 text-xs mb-1">⭐ {rec.rating}</div>
+                    )}
+                    <p className="text-sm text-gray-300 mb-2">{rec.reason || rec.description}</p>
+                  </div>
+                  {rec.description && rec.reason && (
+                    <div className="text-xs text-gray-400 mt-2">{rec.description}</div>
+                  )}
+                </div>
               </div>
             ))}
 
