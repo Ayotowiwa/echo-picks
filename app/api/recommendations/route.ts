@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Normalize category to avoid plural/variant issues
+    
     let cat = category.toLowerCase().trim();
     if (["movies", "film", "films"].includes(cat)) cat = "movie";
     if (["tv show", "shows", "series"].includes(cat)) cat = "tv";
@@ -32,6 +32,7 @@ Do not include Markdown formatting.`;
     try {
       const result = await model.generateContent([prompt]);
       rawText = result.response.text();
+      console.log("Gemini raw response:", rawText);
     } catch (err) {
       console.error("Gemini API error:", err);
       return NextResponse.json(

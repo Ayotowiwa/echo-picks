@@ -13,6 +13,7 @@ const [raw, setRaw] = useState<any>(null);
 
 
  async function getRecommendations() {
+  console.log("Fetching recommendations for:", { title, category });
   setLoading(true);
   setRecommendations([]);
   setError(null);
@@ -61,8 +62,8 @@ const [raw, setRaw] = useState<any>(null);
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="flex flex-col-reverse md:flex-row items-center justify-between px-6 py-20 max-w-7xl mx-auto gap-10">
+  {/* Hero Section */}
+  <section className="flex flex-col-reverse md:flex-row items-center justify-between px-6 py-20 max-w-7xl mx-auto gap-10 relative">
         {/* Text Content */}
         <div className="w-full md:w-1/2 space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
@@ -92,12 +93,12 @@ const [raw, setRaw] = useState<any>(null);
                 placeholder="Enter a title..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-2 bg-[#042c54] text-gray-200 rounded-l focus:outline-none"
+                className="flex-1 min-w-0 py-3 px-2 bg-[#042c54] text-gray-200 rounded-l focus:outline-none"
               />
               <button
                 disabled={!title.trim() || loading}
                 onClick={getRecommendations}
-                className={`px-4 py-2 rounded-r ${
+                className={`min-w-[180px] px-4 py-3 rounded-r ${
                   !title.trim() || loading
                     ? "bg-gray-500 cursor-not-allowed"
                     : "bg-button text-white hover:bg-orange-600"
@@ -107,11 +108,43 @@ const [raw, setRaw] = useState<any>(null);
               </button>
             </div>
           </div>
+        {recommendations.length > 0 && !loading && (
+          <button
+            onClick={() => {
+              const resultsSection = document.getElementById('results-section');
+              if (resultsSection) {
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="mt-8 flex items-center gap-1 text-blue-400 hover:text-blue-600 transition-colors bg-transparent border-none cursor-pointer text-base mx-auto"
+            style={{ outline: 'none' }}
+          >
+            <span className="italic">View Results</span>
+            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12V3M9 12l-4.5-4.5M9 12l4.5-4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        )}
+        </div>
 
-          {/* Results and Error Display */}
-          <div className="mt-6 space-y-4">
+        {/* Hero Image */}
+        <div className="w-full md:w-1/2">
+          <Image
+            src="/hero.png"
+            alt="Hero"
+            width={600}
+            height={400}
+            className="w-full h-auto object-contain"
+          />
+        </div>
+      </section>
+
+  {/* Results Grid Section */}
+  <section id="results-section" className="max-w-7xl mx-auto px-6 pb-16">
+        {recommendations.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
             {recommendations.map((rec, idx) => (
-              <div key={idx} className="flex bg-[#042c54] rounded shadow overflow-hidden" style={{ minHeight: 120 }}>
+              <div key={idx} className="flex bg-[#042c54] rounded shadow overflow-hidden min-h-[120px]">
                 <div className="flex-shrink-0 w-24 h-32 bg-gray-800 flex items-center justify-center">
                   {rec.poster ? (
                     <Image
@@ -139,33 +172,19 @@ const [raw, setRaw] = useState<any>(null);
                 </div>
               </div>
             ))}
-
-            {error && (
-              <div className="p-4 bg-red-900 text-red-200 rounded">
-                <p className="font-bold">Error: {error}</p>
-                {raw && (
-                  <pre className="mt-2 text-xs whitespace-pre-wrap">
-                    {typeof raw === "string" ? raw : JSON.stringify(raw, null, 2)}
-                  </pre>
-                )}
-              </div>
+          </div>
+        )}
+        {error && (
+          <div className="p-4 bg-red-900 text-red-200 rounded mt-10">
+            <p className="font-bold">Error: {error}</p>
+            {raw && (
+              <pre className="mt-2 text-xs whitespace-pre-wrap">
+                {typeof raw === "string" ? raw : JSON.stringify(raw, null, 2)}
+              </pre>
             )}
           </div>
-        </div>
-
-        {/* Hero Image */}
-        <div className="w-full md:w-1/2">
-          <Image
-            src="/hero.png"
-            alt="Hero"
-            width={600}
-            height={400}
-            className="w-full h-auto object-contain"
-          />
-        </div>
+        )}
       </section>
-
-
     </main>
   );
 }
