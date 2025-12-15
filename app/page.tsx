@@ -97,12 +97,12 @@ const [raw, setRaw] = useState<any>(null);
   useEffect(() => {
     const handle = setInterval(() => {
       setCurrentIndex((i) => (i + 1) % BG_IMAGES.length);
-    }, 3000);
+    }, 5000); // each picture lasts 5 seconds
     return () => clearInterval(handle);
   }, []);
 
   return (
-    <main className="relative min-h-screen w-full bg-background text-white font-sans overflow-hidden">
+    <main className="relative min-h-screen w-full text-white font-sans overflow-hidden">
       {/* Background slideshow (behind content) */}
       <div className="bg-slideshow" aria-hidden>
         {BG_IMAGES.map((src, i) => (
@@ -130,10 +130,10 @@ const [raw, setRaw] = useState<any>(null);
         </div>
       </nav>
 
-  {/* Hero Section */}
-  <section className="flex flex-col-reverse md:flex-row items-center justify-between px-6 py-20 max-w-7xl mx-auto gap-10 relative">
-        {/* Text Content */}
-        <div className="w-full md:w-1/2 space-y-6">
+    {/* Hero Section */}
+    <section className="flex flex-col items-center justify-center px-6 py-20 max-w-7xl mx-auto gap-6 relative">
+      {/* Text Content (centered) */}
+      <div className="w-full max-w-3xl space-y-6 text-center hero-panel p-8 rounded-xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
             Find Your <br /> Next Favorite
           </h1>
@@ -195,16 +195,6 @@ const [raw, setRaw] = useState<any>(null);
         )}
         </div>
 
-        {/* Hero Image */}
-        <div className="w-full md:w-1/2">
-          <Image
-            src="/hero.png"
-            alt="Hero"
-            width={600}
-            height={400}
-            className="w-full h-auto object-contain"
-          />
-        </div>
       </section>
 
   {/* Results Grid Section */}

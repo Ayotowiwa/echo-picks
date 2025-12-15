@@ -36,8 +36,18 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0;
-  transition: opacity 0.8s ease-in-out;
+  transition: opacity 1.6s ease-in-out; /* slower crossfade */
 }
 .bg-slideshow .bg-slide.show {
   opacity: 0.35; /* 35% opacity as requested */
+}
+
+/* Hero panel (glassmorphism) */
+.hero-panel {
+  background-color: rgba(4, 12, 24, 0.35); /* from --color-background with 35% opacity */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  border-radius: 0.75rem;
 }
