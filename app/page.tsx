@@ -1,15 +1,66 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function Home() {
+  const BG_IMAGES = [
+    "/pictures/pic1.jpg",
+    "/pictures/Pic2.jpg",
+    "/pictures/pic3.jpg",
+    "/pictures/pic4.jpg",
+    "/pictures/pic5.jpg",
+    "/pictures/pic6.jpg",
+    "/pictures/pic7.jpg",
+    "/pictures/pic8.jpg",
+    "/pictures/pic9.jpg",
+    "/pictures/pic10.jpg",
+    "/pictures/pic11.jpg",
+    "/pictures/pic12.jpg",
+    "/pictures/pic13.jpg",
+    "/pictures/pic14.jpg",
+    "/pictures/pic15.jpg",
+    "/pictures/pic16.jpg",
+    "/pictures/pic17.jpg",
+    "/pictures/pic18.jpg",
+    "/pictures/pic19.jpg",
+    "/pictures/pic20.jpg",
+    "/pictures/pic21.jpg",
+    "/pictures/pic22.jpg",
+    "/pictures/pic23.jpg",
+    "/pictures/pic24.jpg",
+    "/pictures/pic25.jpg",
+    "/pictures/pic26.jpg",
+    "/pictures/pic27.jpg",
+    "/pictures/pic28.jpg",
+    "/pictures/pic29.jpg",
+    "/pictures/pic30.jpg",
+    "/pictures/pic31.jpg",
+    "/pictures/pic32.jpg",
+    "/pictures/pic33.jpg",
+    "/pictures/pic34.jpg",
+    "/pictures/pic35.jpeg",
+    "/pictures/pic36.png",
+    "/pictures/pic37.jpg",
+    "/pictures/pic38.jpg",
+    "/pictures/pic39.jpg",
+    "/pictures/pic40.jpg",
+    "/pictures/pic41.jpg",
+    "/pictures/pic42.jpg",
+    "/pictures/pic43.jpg",
+    "/pictures/pic44.jpg",
+    "/pictures/pic45.jpg",
+    "/pictures/pic46.jpg",
+    "/pictures/pic47.jpg",
+    "/pictures/pic48.jpg",
+  ];
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("book");
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 const [raw, setRaw] = useState<any>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
 
  async function getRecommendations() {
@@ -43,8 +94,25 @@ const [raw, setRaw] = useState<any>(null);
 }
 
 
+  useEffect(() => {
+    const handle = setInterval(() => {
+      setCurrentIndex((i) => (i + 1) % BG_IMAGES.length);
+    }, 3000);
+    return () => clearInterval(handle);
+  }, []);
+
   return (
-    <main className="min-h-screen w-full bg-background text-white font-sans">
+    <main className="relative min-h-screen w-full bg-background text-white font-sans overflow-hidden">
+      {/* Background slideshow (behind content) */}
+      <div className="bg-slideshow" aria-hidden>
+        {BG_IMAGES.map((src, i) => (
+          <div
+            key={src}
+            className={`bg-slide ${i === currentIndex ? "show" : ""}`}
+            style={{ backgroundImage: `url(${src})` }}
+          />
+        ))}
+      </div>
       {/* Navbar */}
       <nav className="w-full flex items-center justify-between px-6 py-4">
         <div className="text-2xl font-bold">

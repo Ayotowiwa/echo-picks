@@ -21,3 +21,23 @@ body {
 };
   
 }
+
+/* Background slideshow styles */
+.bg-slideshow {
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+}
+.bg-slideshow .bg-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+.bg-slideshow .bg-slide.show {
+  opacity: 0.35; /* 35% opacity as requested */
+}
