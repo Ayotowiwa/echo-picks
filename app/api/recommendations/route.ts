@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+
 export async function POST(req: Request) {
   try {
     const { category, title } = await req.json();
