@@ -192,9 +192,17 @@ export default function Home() {
                       <span className="text-xs">No Image</span>
                     )}
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-bold">{rec.title}</h3>
-                    <p className="text-sm text-gray-300">{rec.reason}</p>
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold">{rec.title} {rec.year && <span className="text-gray-400 font-normal">({rec.year})</span>}</h3>
+                      {rec.rating && (
+                        <div className="text-yellow-400 text-xs mb-1">⭐ {rec.rating}</div>
+                      )}
+                      <p className="text-sm text-gray-300 mb-2">{rec.reason || rec.description}</p>
+                    </div>
+                    {rec.description && rec.reason && (
+                      <div className="text-xs text-gray-400 mt-2">{rec.description}</div>
+                    )}
                   </div>
                 </div>
               ))}
