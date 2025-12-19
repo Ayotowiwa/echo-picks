@@ -58,7 +58,8 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("book");
   const [recommendations, setRecommendations] = useState<any[]>([]);
-  const [visibleCount, setVisibleCount] = useState(5);
+  const [pageIndex, setPageIndex] = useState(0);
+  const pageSize = 5;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [raw, setRaw] = useState<any>(null);
@@ -81,7 +82,7 @@ export default function Home() {
 
       if (res.ok && data.recommendations) {
         setRecommendations(data.recommendations);
-        setVisibleCount(5);
+        setPageIndex(0); // reset to first page
       } else {
         setError(data.error || "Unknown error");
         if (data.raw) setRaw(data.raw);
@@ -178,7 +179,7 @@ export default function Home() {
         {recommendations.length > 0 && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {recommendations.slice(0, visibleCount).map((rec, idx) => (
+              {recommendations.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize).map((rec, idx) => (
                 <div key={idx} className="flex bg-[#042c54] rounded overflow-hidden">
                   <div className="w-24 h-32 bg-gray-800 flex items-center justify-center">
                     {rec.poster ? (
@@ -208,10 +209,10 @@ export default function Home() {
               ))}
             </div>
 
-            {recommendations.length > visibleCount && (
+            {((pageIndex + 1) * pageSize) < recommendations.length && (
               <div className="flex justify-center mt-6">
                 <button
-                  onClick={() => setVisibleCount((v) => Math.min(v + 5, recommendations.length))}
+                  onClick={() => setPageIndex((p) => p + 1)}
                   className="px-4 py-2 bg-button text-white rounded"
                 >
                   View more
